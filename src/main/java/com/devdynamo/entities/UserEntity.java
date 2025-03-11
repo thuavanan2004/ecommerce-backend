@@ -1,15 +1,16 @@
 package com.devdynamo.entities;
 
-import com.devdynamo.enums.RoleEnum;
+import com.devdynamo.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -23,10 +24,10 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String full_name;
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -40,13 +41,34 @@ public class UserEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "ENUM('admin', 'customer') DEFAULT 'customer'")
-    private RoleEnum role = RoleEnum.CUSTOMER;
+    private Role role = Role.customer;
 
-    @Column
-    @CreationTimestamp
-    private Timestamp created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    @Column
-    @UpdateTimestamp
-    private Timestamp updatedAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<OrderEntity> orderEntities = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<WishListEntity> wishListEntities = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<ReviewEntity> reviewEntities = new ArrayList<>();
 }
