@@ -31,7 +31,7 @@ public class ProductEntity {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Column(nullable = false, precision = 5, scale = 2, columnDefinition = "DECIMAL(5,2) DEFAULT 0.00 CHECK (discount >= 0.00 AND discount < 100.00)")
+    @Column(nullable = false, precision = 5, scale = 2)
     private BigDecimal discount;
 
     @Column(name = "stock_quantity", nullable = false)

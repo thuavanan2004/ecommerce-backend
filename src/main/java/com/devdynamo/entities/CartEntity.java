@@ -19,8 +19,8 @@ public class CartEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
-    private UserEntity userEntity;
+    @Column(name = "user_id", unique = true)
+    private Long userId;
 
     @Column(name = "session_id", unique = true)
     private String sessionId;

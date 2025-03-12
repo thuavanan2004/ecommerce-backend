@@ -15,13 +15,13 @@ import java.time.LocalDateTime;
 public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending'")
+    @Column(nullable = false)
     private OrderStatus statusEnum = OrderStatus.pending;
 
     @Column(name = "created_at", updatable = false)

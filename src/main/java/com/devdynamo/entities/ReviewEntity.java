@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "wishlists")
+@Table(name = "reviews")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,7 +22,7 @@ public class ReviewEntity {
     @Column(nullable = false)
     private int rating;
 
-    @Column(columnDefinition = "TEXT")
+    @Column
     private String comment;
 
     @Column(name = "created_at", nullable = false, updatable = false)

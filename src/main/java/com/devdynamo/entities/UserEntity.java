@@ -1,7 +1,6 @@
 package com.devdynamo.entities;
 
 import com.devdynamo.enums.Role;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,7 +39,7 @@ public class UserEntity {
     private String address;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM('admin', 'customer') DEFAULT 'customer'")
+    @Column(name = "role", nullable = false)
     private Role role = Role.customer;
 
     @Column(name = "created_at")
@@ -60,15 +59,12 @@ public class UserEntity {
         updatedAt = LocalDateTime.now();
     }
 
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<OrderEntity> orderEntities = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<WishListEntity> wishListEntities = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ReviewEntity> reviewEntities = new ArrayList<>();
 }
