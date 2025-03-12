@@ -18,6 +18,7 @@ public class ProductDTO {
     private BigDecimal discount;
     private Integer stockQuantity;
     private Long categoryId;
+    private String categoryName;
     private String imageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/admin/products")
 public class ProductController {
 
     @Autowired
@@ -19,5 +21,10 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getById(@PathVariable Long id){
         return ResponseEntity.ok(productService.getProductById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductDTO>> getAll(){
+        return ResponseEntity.ok(productService.getAll());
     }
 }

@@ -14,7 +14,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/products/**").permitAll() // Cho phép API truy cập không cần đăng nhập
+                        .requestMatchers("/api/admin/products/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();
