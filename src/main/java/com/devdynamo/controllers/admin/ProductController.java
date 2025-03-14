@@ -1,13 +1,15 @@
 package com.devdynamo.controllers.admin;
 
-import com.devdynamo.dtos.ProductDTO;
+import com.devdynamo.dtos.request.ProductRequestDTO;
+import com.devdynamo.dtos.response.ProductResponseDTO;
+import com.devdynamo.dtos.response.ResponseData;
+import com.devdynamo.dtos.response.ResponseSuccess;
 import com.devdynamo.services.ProductService;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,12 +21,14 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getById(@PathVariable Long id){
-        return ResponseEntity.ok(productService.getProductById(id));
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseData<ProductResponseDTO> getById(@Min(1) @PathVariable Long id){
+        return new ResponseData<>(HttpStatus.OK.value(), "Get product success", productService.getProductById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAll(){
-        return ResponseEntity.ok(productService.getAll());
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseData<List<ProductResponseDTO>> getAll(){
+        return new ResponseData<>(HttpStatus.OK.value(), "Get list product success", productService.getAll());
     }
 }

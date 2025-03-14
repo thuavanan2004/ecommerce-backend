@@ -1,16 +1,15 @@
-package com.devdynamo.dtos;
+package com.devdynamo.dtos.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-public class ProductDTO {
+@Builder
+public class ProductResponseDTO {
     private Long id;
     private String name;
     private String description;

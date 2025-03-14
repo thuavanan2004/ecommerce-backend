@@ -1,6 +1,7 @@
 package com.devdynamo.services.Impl;
 
-import com.devdynamo.dtos.ProductDTO;
+import com.devdynamo.dtos.request.ProductRequestDTO;
+import com.devdynamo.dtos.response.ProductResponseDTO;
 import com.devdynamo.entities.ProductEntity;
 import com.devdynamo.exceptions.ResourceNotFoundException;
 import com.devdynamo.mappers.ProductMapper;
@@ -23,14 +24,15 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ProductDTO getProductById(Long id) {
+    public ProductResponseDTO getProductById(Long id) {
         ProductEntity record = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         return productMapper.toDTO(record);
     }
 
     @Override
-    public List<ProductDTO> getAll() {
+    public List<ProductResponseDTO> getAll() {
+        List<ProductEntity> list = productRepository.findAll();
         return productRepository.findAll().stream().map(productMapper :: toDTO).collect(Collectors.toList());
     }
 }
