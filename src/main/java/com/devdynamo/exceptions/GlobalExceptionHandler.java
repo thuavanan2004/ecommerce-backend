@@ -1,7 +1,8 @@
 package com.devdynamo.exceptions;
 
 import jakarta.validation.ConstraintViolationException;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -55,6 +56,35 @@ public class GlobalExceptionHandler {
         errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
         errorResponse.setStatus(NOT_FOUND.value());
         errorResponse.setError(NOT_FOUND.getReasonPhrase());
+        errorResponse.setMessage(e.getMessage());
+
+        return errorResponse;
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorResponse handleHttpMessageNotReadable(HttpMessageNotReadableException e, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(new Date());
+        errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
+        errorResponse.setStatus(BAD_REQUEST.value());
+        errorResponse.setError("Invalid Request Body");
+        String message = e.getMessage();
+        int end = message.lastIndexOf(":");
+        message = message.substring(0, end);
+        errorResponse.setMessage(message);
+
+        return errorResponse;
+    }
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorResponse handleUsernameNotFoundException(UsernameNotFoundException e, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(new Date());
+        errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
+        errorResponse.setStatus(BAD_REQUEST.value());
+        errorResponse.setError("User not found");
+
         errorResponse.setMessage(e.getMessage());
 
         return errorResponse;

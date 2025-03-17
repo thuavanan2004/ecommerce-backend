@@ -12,5 +12,5 @@ import java.lang.annotation.*;
 public @interface PhoneNumber {
     String message() default "Invalid phone number";
     Class <?>[] groups() default {};
-    Class<? extends Payload>[] payLoad() default {};
+    Class<? extends Payload>[] payload() default {};
 }
