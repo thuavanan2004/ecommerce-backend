@@ -13,4 +13,10 @@ public interface UserService {
 
     UserResponseDTO getUser(Long id);
 
+    UserEntity getUserByEmail(String email);
+
+    long saveUser(UserEntity userEntity);
+
+    void updateUser(long userId, UserRequestDTO request);
+
 }

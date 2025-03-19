@@ -25,7 +25,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class AppConfig {
-
     private final PreFilter preFilter;
     private final UserService userService;
 

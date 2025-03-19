@@ -20,11 +20,11 @@ public class WishListEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", unique = true)
     private UserEntity user;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id", unique = true)
     private ProductEntity product;
 
     @Column(name = "created_at", nullable = false, updatable = false)

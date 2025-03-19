@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
 
 
 
-    @ExceptionHandler(ResourceNotFoundException.class)
+    @ExceptionHandler({ResourceNotFoundException.class, InvalidDataException.class})
     @ResponseStatus(NOT_FOUND)
     public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException e, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse();
@@ -76,6 +76,7 @@ public class GlobalExceptionHandler {
 
         return errorResponse;
     }
+
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(BAD_REQUEST)
     public ErrorResponse handleUsernameNotFoundException(UsernameNotFoundException e, WebRequest request) {

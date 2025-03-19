@@ -28,6 +28,7 @@ public class UserRequestDTO{
     private String password;
 
     @PhoneNumber
+    @NotEmpty(message = "Phone must be not empty")
     private String phone;
 
     @NotEmpty(message = "Address must be not empty")
