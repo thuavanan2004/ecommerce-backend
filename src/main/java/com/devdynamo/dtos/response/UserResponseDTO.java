@@ -1,6 +1,7 @@
 package com.devdynamo.dtos.response;
 
 import com.devdynamo.enums.Role;
+import com.devdynamo.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -16,6 +17,7 @@ public class UserResponseDTO{
     private String fullName;
     private String email;
     private String phone;
+    private UserStatus status;
     private String address;
     private Role role;
     private LocalDateTime createdAt;

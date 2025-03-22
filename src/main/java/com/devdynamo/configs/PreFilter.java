@@ -1,6 +1,7 @@
 package com.devdynamo.configs;
 
 import com.devdynamo.services.JwtService;
+import com.devdynamo.services.UserDetailService;
 import com.devdynamo.services.UserService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
@@ -28,7 +29,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class PreFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final UserService userService;
+    private final UserDetailService userDetailService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -44,7 +45,7 @@ public class PreFilter extends OncePerRequestFilter {
         final String jwt = authHeader.substring(7);
         final String userName = jwtService.extractUserName(jwt, ACCESS_TOKEN);
         if (StringUtils.isNotEmpty(userName) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userService.userDetailsService().loadUserByUsername(userName);
+            UserDetails userDetails = userDetailService.userDetailsService().loadUserByUsername(userName);
             if (jwtService.isTokenValid(jwt, ACCESS_TOKEN, userDetails)) {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

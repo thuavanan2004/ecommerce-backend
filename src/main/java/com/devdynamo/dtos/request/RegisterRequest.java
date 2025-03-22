@@ -24,5 +24,6 @@ public class RegisterRequest {
     @NotNull
     @PhoneNumber
     private String phone;
+
     private String address;
 }

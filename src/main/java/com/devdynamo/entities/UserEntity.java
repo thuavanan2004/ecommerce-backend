@@ -1,6 +1,7 @@
 package com.devdynamo.entities;
 
 import com.devdynamo.enums.Role;
+import com.devdynamo.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +33,10 @@ public class UserEntity implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private UserStatus status = UserStatus.active;
 
     @Column
     private String phone;

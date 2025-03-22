@@ -1,6 +1,7 @@
 package com.devdynamo.dtos.request;
 
 import com.devdynamo.enums.Role;
+import com.devdynamo.enums.UserStatus;
 import com.devdynamo.validators.EnumPattern;
 import com.devdynamo.validators.PhoneNumber;
 import jakarta.validation.constraints.Email;
@@ -20,12 +21,15 @@ public class UserRequestDTO{
     @NotBlank(message = "FullName must be not blank")
     private String fullName;
 
-    @NotBlank(message = "Email must be not blank")
-    @Email(message = "Email format invalid")
+    @NotBlank(message = "email must be not blank")
     private String email;
 
     @NotNull(message = "Password must be not null")
     private String password;
+
+    @EnumPattern( name="role", regexp = "active|inactive")
+    @NotNull(message = "Status must be not null")
+    private UserStatus status;
 
     @PhoneNumber
     @NotEmpty(message = "Phone must be not empty")
@@ -35,5 +39,6 @@ public class UserRequestDTO{
     private String address;
 
     @EnumPattern( name="role", regexp = "customer|admin")
+    @NotNull(message = "Role must be not null")
     private Role role;
 }

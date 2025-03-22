@@ -8,6 +8,7 @@ import com.devdynamo.entities.RedisToken;
 import com.devdynamo.entities.TokenEntity;
 import com.devdynamo.entities.UserEntity;
 import com.devdynamo.enums.Role;
+import com.devdynamo.enums.UserStatus;
 import com.devdynamo.exceptions.InvalidDataException;
 import com.devdynamo.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -57,6 +58,7 @@ public class AuthenticationService {
                 .fullName(request.getFullName())
                 .email(request.getEmail())
                 .phone(request.getPhone())
+                .status(UserStatus.active)
                 .password(passwordEncoder.encode(request.getPassword()))
                 .address(request.getAddress())
                 .role(Role.customer)

@@ -3,14 +3,15 @@ package com.devdynamo.dtos.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @Builder
-public class ProductResponseDTO {
+@AllArgsConstructor
+public class ProductResponseDTO implements Serializable {
     private Long id;
     private String name;
     private String description;
@@ -22,4 +23,5 @@ public class ProductResponseDTO {
     private String imageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
 }

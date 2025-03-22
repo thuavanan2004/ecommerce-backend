@@ -18,7 +18,6 @@ public class ProductRequestDTO {
     @NotBlank(message = "Name must be not blank")
     private String name;
 
-    @NotNull(message = "Description must be not null")
     private String description;
 
     @NotNull(message = "Price must not be null")
@@ -31,7 +30,9 @@ public class ProductRequestDTO {
     @NotNull(message = "Stock quantity must not be null")
     @Min(value = 0, message = "Stock quantity must be greater than or equal to 0")
     private Integer stockQuantity;
+
+    @NotNull(message = "categoryId must be not null")
     private Long categoryId;
-    private String categoryName;
+
     private String imageUrl;
 }
