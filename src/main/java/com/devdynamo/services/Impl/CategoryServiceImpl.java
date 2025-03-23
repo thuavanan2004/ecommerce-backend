@@ -10,7 +10,19 @@ import com.devdynamo.repositories.CategoryRepository;
 import com.devdynamo.services.CategoryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.devdynamo.utils.AppConst.SORT_BY;
 
 @Service
 @AllArgsConstructor
@@ -28,8 +40,35 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public PageResponse<?> getAllCategory(int pageNo, int pageSize, String search, String sort) {
-        return null;
+    public PageResponse<?> getAllCategory(int pageNo, int pageSize, String sort) {
+        int page = 0;
+        if(pageNo > 0){
+            page = pageNo - 1;
+        }
+
+        List<Sort.Order> orders = new ArrayList<>();
+        if(StringUtils.hasLength(sort)){
+            Pattern pattern = Pattern.compile(SORT_BY);
+            Matcher matcher = pattern.matcher(sort);
+
+            if(matcher.find()){
+                if (matcher.group(3).equalsIgnoreCase("asc")) {
+                    orders.add(new Sort.Order(Sort.Direction.ASC, matcher.group(1)));
+                } else {
+                    orders.add(new Sort.Order(Sort.Direction.DESC, matcher.group(1)));
+                }
+            }
+        }
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(orders));
+        Page<CategoryEntity> categories = categoryRepository.findAll(pageable);
+        List<CategoryResponseDTO> list = categories.stream().map(categoryMapper::toDTO).toList();
+        return PageResponse.builder()
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalPage(categories.getTotalPages())
+                .items(list)
+                .build();
     }
 
     @Override

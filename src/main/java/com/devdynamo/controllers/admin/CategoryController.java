@@ -36,10 +36,12 @@ public class CategoryController {
 
     @Operation(summary = "Get list category")
     @GetMapping("/list")
-    public ResponseData<?> getAllCategory(int pageNo, int pageSize, String search, String sort){
+    public ResponseData<?> getAllCategory(@RequestParam(defaultValue = "0", required = false) int pageNo,
+                                          @Min(10) @RequestParam(defaultValue = "20", required = false) int pageSize,
+                                          @RequestParam(required = false) String sort){
         log.info("Get list category");
         try{
-            return new ResponseData<>(HttpStatus.OK.value(), "Get list category successfully", categoryService.getAllCategory(pageNo, pageSize, search, sort));
+            return new ResponseData<>(HttpStatus.OK.value(), "Get list category successfully", categoryService.getAllCategory(pageNo, pageSize, sort));
         } catch (Exception e) {
             log.error("errorMessage={}", e.getMessage(), e.getCause());
             return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Get list category failed");

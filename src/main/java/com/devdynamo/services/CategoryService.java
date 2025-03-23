@@ -7,7 +7,7 @@ import com.devdynamo.dtos.response.PageResponse;
 public interface CategoryService {
     CategoryResponseDTO getCategory(long categoryId);
 
-    PageResponse<?> getAllCategory(int pageNo, int pageSize, String search, String sort);
+    PageResponse<?> getAllCategory(int pageNo, int pageSize, String sort);
 
     void createCategory(CategoryRequestDTO request);
 
