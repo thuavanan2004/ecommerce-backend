@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public PageResponse<?> getAllCategory(int pageNo, int pageSize, String sort) {
+    public PageResponse<?> getAllCategoryForAdmin(int pageNo, int pageSize, String sort) {
         int page = 0;
         if(pageNo > 0){
             page = pageNo - 1;
@@ -69,6 +69,13 @@ public class CategoryServiceImpl implements CategoryService {
                 .totalPage(categories.getTotalPages())
                 .items(list)
                 .build();
+    }
+
+    @Override
+    public List<CategoryResponseDTO> getAllCategoryForClient() {
+        log.info("Service: Get list category for client");
+
+        return categoryRepository.findAll().stream().map(categoryMapper::toDTO).toList();
     }
 
     @Override

@@ -12,6 +12,8 @@ import com.devdynamo.repositories.ProductRepository;
 import com.devdynamo.repositories.SearchRepository;
 import com.devdynamo.services.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
@@ -40,8 +43,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageResponse<?> getAllProducts(int pageNo, int pageSize, String search, String sortBy) {
+    public PageResponse<?> getAllProductForAdmin(int pageNo, int pageSize, String search, String sortBy) {
         return searchRepository.getProducts(pageNo, pageSize, search, sortBy);
+    }
+
+    @Override
+    public PageResponse<?> getAllProductForClient(Pageable pageable, String[] products, String[] categories) {
+        return null;
     }
 
 
@@ -53,6 +61,7 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(category);
 
         productRepository.save(product);
+        log.info("Update product successfully");
     }
 
     @Override
@@ -61,12 +70,16 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity product = productMapper.toEntity(request);
         product.setCategory(category);
         productRepository.save(product);
+
+        log.info("Create product successfully");
     }
 
     @Override
     public void deleteProduct(long productId) {
         getProductEntityById(productId);
         productRepository.deleteById(productId);
+
+        log.info("Delete product successfully");
     }
 
 }

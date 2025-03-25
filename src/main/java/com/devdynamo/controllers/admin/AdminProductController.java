@@ -1,7 +1,6 @@
 package com.devdynamo.controllers.admin;
 
 import com.devdynamo.dtos.request.ProductRequestDTO;
-import com.devdynamo.dtos.response.ProductResponseDTO;
 import com.devdynamo.dtos.response.ResponseData;
 import com.devdynamo.dtos.response.ResponseError;
 import com.devdynamo.services.ProductService;
@@ -10,22 +9,18 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/admin/products")
-@Tag(name= "Products")
+@Tag(name= "Admin products")
 @SecurityRequirement(name = "bearerAuth")
 @Slf4j
 @RequiredArgsConstructor
-public class ProductController {
+public class AdminProductController {
 
     private final ProductService productService;
 
@@ -50,7 +45,7 @@ public class ProductController {
                                  @RequestParam(required = false) String sortBy){
         log.info("Get list product");
         try {
-            return new ResponseData<>(HttpStatus.OK.value(), "Get list product success", productService.getAllProducts(pageNo, pageSize, search, sortBy));
+            return new ResponseData<>(HttpStatus.OK.value(), "Get list product success", productService.getAllProductForAdmin(pageNo, pageSize, search, sortBy));
         } catch (Exception e){
             log.info("errorMessage={}", e.getMessage(), e.getCause());
             return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Get list product failed");

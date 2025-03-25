@@ -4,6 +4,7 @@ import com.devdynamo.dtos.response.PageResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -81,5 +82,13 @@ public class SearchRepository {
                 .totalPage(page.getTotalPages())
                 .items(products)
                 .build();
+    }
+
+    public PageResponse searchUserByCriteriaWithJoin(Pageable pageable, String[] user, String[] address) {
+        log.info("-------------- searchUserByCriteriaWithJoin --------------");
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+        return null;
     }
 }

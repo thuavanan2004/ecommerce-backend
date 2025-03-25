@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/admin/users")
 @Validated
-@Tag(name="Users")
+@Tag(name="Admin users")
 @SecurityRequirement(name = "bearerAuth")
 @Slf4j
-public class UserController {
+public class AdminUserController {
     @Autowired
     private UserService userService;
 

@@ -5,9 +5,9 @@ import com.devdynamo.dtos.response.ResponseData;
 import com.devdynamo.dtos.response.ResponseError;
 import com.devdynamo.services.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RequestMapping("/api/admin/category")
 @RequiredArgsConstructor
-public class CategoryController {
+@Tag(name = "Admin category")
+public class AdminCategoryController {
     private final CategoryService categoryService;
 
     @Operation(summary = "Get detail info category")
@@ -41,7 +42,7 @@ public class CategoryController {
                                           @RequestParam(required = false) String sort){
         log.info("Get list category");
         try{
-            return new ResponseData<>(HttpStatus.OK.value(), "Get list category successfully", categoryService.getAllCategory(pageNo, pageSize, sort));
+            return new ResponseData<>(HttpStatus.OK.value(), "Get list category successfully", categoryService.getAllCategoryForAdmin(pageNo, pageSize, sort));
         } catch (Exception e) {
             log.error("errorMessage={}", e.getMessage(), e.getCause());
             return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Get list category failed");

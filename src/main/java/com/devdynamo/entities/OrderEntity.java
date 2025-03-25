@@ -17,12 +17,15 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name="order_code", unique = true, nullable = false)
+    private String orderCode;
+
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private OrderStatus statusEnum = OrderStatus.pending;
+    @Column(name = "status", nullable = false)
+    private OrderStatus status = OrderStatus.pending;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
