@@ -10,7 +10,7 @@ import lombok.*;
 public class RedisCart {
     private long productId;
     private String name;
-    private int price;
-    private int quantity;
+    private long price;
+    private long quantity;
     private String image;
 }

@@ -59,18 +59,30 @@ public class ClientCartController {
         }
     }
 
-    @Operation(summary = "Merge cart for user")
-    @PostMapping("/merge")
-    public ResponseData<?> mergeCart(@Valid @RequestBody MergeCartRequest request){
-        log.info("Merge cart for user");
+    @Operation(summary = "Merge cart for user to database")
+    @PostMapping("/mergeToDb")
+    public ResponseData<?> mergeCartDb(@Valid @RequestBody MergeCartRequest request){
+        log.info("Merge cart to database for user");
         try{
-            redisCartService.mergeCart(request);
-            return new ResponseData<>(HttpStatus.OK.value(), "Merge cart for user successfully");
+            redisCartService.mergeCartToDB(request);
+            return new ResponseData<>(HttpStatus.OK.value(), "Merge cart to database for user successfully");
         } catch (Exception e) {
             log.error("errorMessage={}", e.getMessage(), e.getCause());
-            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Merge cart for user failed");
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Merge cart to database for user failed");
         }
     }
 
+    @Operation(summary = "Merge cart for user to redis cache")
+    @PostMapping("/mergeToRedis")
+    public ResponseData<?> mergeCartRedis(@Valid @RequestBody MergeCartRequest request){
+        log.info("Merge cart to redis cache for user");
+        try{
+            redisCartService.mergeCartToRedis(request);
+            return new ResponseData<>(HttpStatus.OK.value(), "Merge cart to redis cache for user successfully");
+        } catch (Exception e) {
+            log.error("errorMessage={}", e.getMessage(), e.getCause());
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Merge cart to redis cache for user failed");
+        }
+    }
 
 }
