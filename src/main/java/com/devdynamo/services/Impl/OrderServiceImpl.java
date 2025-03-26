@@ -11,10 +11,7 @@ import com.devdynamo.entities.UserEntity;
 import com.devdynamo.enums.OrderStatus;
 import com.devdynamo.exceptions.ResourceNotFoundException;
 import com.devdynamo.mappers.OrderMapper;
-import com.devdynamo.repositories.OrderItemRepository;
-import com.devdynamo.repositories.OrderRepository;
-import com.devdynamo.repositories.ProductRepository;
-import com.devdynamo.repositories.UserRepository;
+import com.devdynamo.repositories.*;
 import com.devdynamo.repositories.specification.OrderSpecificationsBuilder;
 import com.devdynamo.services.OrderService;
 import com.devdynamo.utils.GenerateUtils;
@@ -48,6 +45,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final ProductRepository productRepository;
 
+    private final SearchRepository searchRepository;
+
     private final OrderMapper orderMapper;
 
     public ProductEntity getProduct(long productId){
@@ -61,23 +60,29 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public PageResponse<?> getAllOrderForAdmin(Pageable pageable, String[] order, String[] user) {
-        OrderSpecificationsBuilder builder = new OrderSpecificationsBuilder();
-
-        Pattern pattern = Pattern.compile(SEARCH_SPEC_OPERATOR);
-        for (String s : order) {
-            Matcher matcher = pattern.matcher(s);
-            if (matcher.find()) {
-                builder.with(matcher.group(1), matcher.group(2), matcher.group(4), matcher.group(3), matcher.group(5));
+        Page<OrderEntity> orders;
+        if(order != null && user != null){
+            return searchRepository.searchOrderByCriteriaWithJoin(pageable, order, user);
+        } else if(order != null){
+            OrderSpecificationsBuilder builder = new OrderSpecificationsBuilder();
+            Pattern pattern = Pattern.compile(SEARCH_SPEC_OPERATOR);
+            for (String s : order) {
+                Matcher matcher = pattern.matcher(s);
+                if (matcher.find()) {
+                    builder.with(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4), matcher.group(5));
+                }
             }
+            orders = orderRepository.findAll(Objects.requireNonNull(builder.build()), pageable);
+        } else {
+            orders = orderRepository.findAll(pageable);
         }
 
-        Page<OrderEntity> orders = orderRepository.findAll(Objects.requireNonNull(builder.build()), pageable);
-
+        List<OrderResponseDTO> list = orders.stream().map(orderMapper::toDTO).toList();
         return PageResponse.builder()
                 .pageNo(pageable.getPageNumber())
                 .pageSize(pageable.getPageSize())
                 .totalPage(orders.getTotalPages())
-                .items(orders)
+                .items(list)
                 .build();
     }
 
@@ -88,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
             page = pageNo - 1;
         }
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of( page, pageSize);
 
         Page<OrderEntity> list = orderRepository.findAllByUserId(userId, pageable);
         List<OrderResponseDTO> orders = list.stream().map(orderMapper::toDTOWithItems).toList();

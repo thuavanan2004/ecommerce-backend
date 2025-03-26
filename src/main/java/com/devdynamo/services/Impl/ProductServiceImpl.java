@@ -10,14 +10,22 @@ import com.devdynamo.mappers.ProductMapper;
 import com.devdynamo.repositories.CategoryRepository;
 import com.devdynamo.repositories.ProductRepository;
 import com.devdynamo.repositories.SearchRepository;
+import com.devdynamo.repositories.specification.ProductSpecificationBuilder;
 import com.devdynamo.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static com.devdynamo.utils.AppConst.SEARCH_SPEC_OPERATOR;
 
 
 @Service
@@ -49,7 +57,31 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageResponse<?> getAllProductForClient(Pageable pageable, String[] products, String[] categories) {
-        return null;
+        Page<ProductEntity> records;
+
+        if(products != null && categories != null){
+            return searchRepository.searchProductByCriteriaWithJoin(pageable, products, categories);
+        }else if(products != null){
+            ProductSpecificationBuilder builder = new ProductSpecificationBuilder();
+            Pattern pattern = Pattern.compile(SEARCH_SPEC_OPERATOR);
+            for (String p : products){
+                Matcher matcher = pattern.matcher(p);
+                if(matcher.find()){
+                    builder.with(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4),matcher.group(5));
+                }
+            }
+            records = productRepository.findAll(Objects.requireNonNull(builder.build()), pageable);
+        } else {
+            records = productRepository.findAll(pageable);
+        }
+
+        List<ProductResponseDTO> results = records.stream().map(productMapper::toDTO).toList();
+        return PageResponse.builder()
+                .pageNo(pageable.getPageNumber())
+                .pageSize(pageable.getPageNumber())
+                .totalPage(records.getTotalPages())
+                .items(results)
+                .build();
     }
 
 

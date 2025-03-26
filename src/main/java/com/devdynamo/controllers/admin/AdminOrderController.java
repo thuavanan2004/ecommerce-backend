@@ -65,7 +65,7 @@ public class AdminOrderController {
     @Operation(summary = "Delete order")
     @DeleteMapping("/{orderId}")
     public ResponseData<?> deleteOrder(@Min(1) @PathVariable long orderId){
-        log.info("Update order");
+        log.info("Delete order");
         try {
             orderService.deleteOrder(orderId);
             return new ResponseData<>(HttpStatus.OK.value(), "Delete order successfully");

@@ -10,8 +10,8 @@ import java.io.Serializable;
 @Setter
 @Builder
 public class PageResponse<T> implements Serializable {
-    private int pageNo;
-    private int pageSize;
-    private int totalPage;
+    private long pageNo;
+    private long pageSize;
+    private long totalPage;
     private T items;
 }

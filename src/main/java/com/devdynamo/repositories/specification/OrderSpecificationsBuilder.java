@@ -9,6 +9,7 @@ import java.util.List;
 import static com.devdynamo.repositories.specification.SearchOperation.*;
 
 public final class OrderSpecificationsBuilder {
+
     public final List<SpecSearchCriteria> params;
 
     public OrderSpecificationsBuilder() {

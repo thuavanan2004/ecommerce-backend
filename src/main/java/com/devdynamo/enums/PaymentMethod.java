@@ -4,5 +4,6 @@ public enum PaymentMethod {
     cash,
     credit_card,
     bank_transfer,
+    zalopay,
     momo;
 }

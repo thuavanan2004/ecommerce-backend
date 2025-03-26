@@ -1,23 +1,21 @@
 package com.devdynamo.repositories.specification;
 
-import com.devdynamo.entities.OrderEntity;
+import com.devdynamo.entities.ProductEntity;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.NonNull;
 
 @Getter
 @RequiredArgsConstructor
-public class OrderSpecification implements Specification<OrderEntity> {
-
+public class ProductSpecification implements Specification<ProductEntity> {
     private final SpecSearchCriteria criteria;
-
     @Override
-    public Predicate toPredicate(@NonNull final Root<OrderEntity> root, final CriteriaQuery<?> query, @NonNull final CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(@NonNull Root<ProductEntity> root, CriteriaQuery<?> query,@NonNull CriteriaBuilder criteriaBuilder) {
         return switch (criteria.getOperation()){
             case EQUALITY -> criteriaBuilder.equal(root.get(criteria.getKey()), criteria.getValue());
             case NEGATION -> criteriaBuilder.notEqual(root.get(criteria.getKey()), criteria.getValue());

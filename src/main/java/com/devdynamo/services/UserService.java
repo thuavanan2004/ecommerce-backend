@@ -24,8 +24,6 @@ public interface UserService {
 
     void changeRole(long userId, Role role);
 
-    String confirmUser(long userId, String verifyCode);
-
     void deleteUser(long userId);
 
     PageResponse<?> getAllUsersWithSortBy(int pageNo, int pageSize, String... sorts);

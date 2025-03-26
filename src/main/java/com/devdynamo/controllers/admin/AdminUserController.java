@@ -85,27 +85,13 @@ public class AdminUserController {
     @Operation(summary = "Change role of user", description = "Cập nhật quyền người dùng")
     @PatchMapping("/role/{userId}")
     public ResponseData<?> updateRole(@PathVariable @Min(1) long userId, @RequestParam @EnumPattern( name="role", regexp = "customer|admin") Role role){
-        log.info("Request change status, userId={}", userId);
+        log.info("Request change role, userId={}", userId);
         try {
             userService.changeRole(userId, role);
             return new ResponseData<>(HttpStatus.ACCEPTED.value(), "Change role success");
         } catch (Exception e) {
             log.error("errorMessage={}", e.getMessage(), e.getCause());
             return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Change role failed");
-        }
-    }
-
-    @Operation(summary = "Confirm user", description = "Xác nhận người dùng")
-    @GetMapping("/confirm/{userId}")
-    public ResponseData<?> confirm(@PathVariable @Min(1) long userId, @RequestParam String verifyCode){
-        log.info("Confirm user, userId={}, verifyCode={}", userId, verifyCode);
-
-        try {
-            userService.confirmUser(userId, verifyCode);
-            return new ResponseData<>(HttpStatus.ACCEPTED.value(), "User has confirmed success");
-        }catch(Exception e) {
-            log.error("errorMessage={}", e.getMessage(), e.getCause());
-            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Confirm was failed");
         }
     }
 

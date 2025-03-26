@@ -23,6 +23,7 @@ public class SpecSearchCriteria {
     }
 
     public SpecSearchCriteria(final String key, final SearchOperation operation, final Object value, final String orPredicate) {
+        super();
         this.orPredicate = orPredicate != null && orPredicate.equals(OR_PREDICATE_FLAG);
         this.key = key;
         this.operation = operation;

@@ -98,10 +98,6 @@ public class UserServiceImpl implements UserService  {
         log.info("Role changed");
     }
 
-    @Override
-    public String confirmUser(long userId, String verifyCode) {
-        return "Confirmed!";
-    }
 
     @Override
     public void deleteUser(long userId) {
