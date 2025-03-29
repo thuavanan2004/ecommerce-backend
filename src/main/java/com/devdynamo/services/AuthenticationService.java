@@ -146,7 +146,7 @@ public class AuthenticationService {
     private UserEntity validateToken(String token) {
         var email = jwtService.extractUserName(token, RESET_TOKEN);
 
-        redisTokenService.isExists(email);
+        redisTokenService.isExist(email);
 
         var user = userService.getUserByEmail(email);
         if (!user.isEnabled()) {

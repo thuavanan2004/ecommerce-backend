@@ -16,11 +16,11 @@ public class RedisTokenService {
     }
 
     public void remove(String id) {
-        isExists(id);
+        isExist(id);
         redisTokenRepository.deleteById(id);
     }
 
-    public boolean isExists(String id) {
+    public boolean isExist(String id) {
         if (!redisTokenRepository.existsById(id)) {
             throw new InvalidDataException("Token not exists");
         }
