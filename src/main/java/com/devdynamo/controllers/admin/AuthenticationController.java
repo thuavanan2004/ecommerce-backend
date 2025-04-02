@@ -26,7 +26,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/auth")
+@RequestMapping("/api/auth")
 @Tag(name="Authentication")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;

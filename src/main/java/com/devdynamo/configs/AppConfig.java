@@ -40,7 +40,7 @@ public class AppConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/admin/auth/**").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**", "/api/client/**").permitAll().anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(preFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
