@@ -38,6 +38,9 @@ public class ProductEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "deleted")
+    private boolean deleted = false;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

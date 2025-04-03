@@ -3,10 +3,12 @@ package com.devdynamo.mappers;
 import com.devdynamo.dtos.request.ProductRequestDTO;
 import com.devdynamo.dtos.response.ProductResponseDTO;
 import com.devdynamo.entities.ProductEntity;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
+import com.devdynamo.services.CloudinaryService;
+import lombok.RequiredArgsConstructor;
+import org.mapstruct.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
@@ -15,8 +17,15 @@ public interface ProductMapper {
     ProductResponseDTO toDTO(ProductEntity product);
 
     @Mapping(target = "category", ignore = true)
+    @Mapping(target = "imageUrl", ignore = true)
     ProductEntity toEntity(ProductRequestDTO dto);
 
     @Mapping(target = "category", ignore = true)
+    @Mapping(target = "imageUrl", ignore = true)
     void updateProductFromDTO(ProductRequestDTO dto, @MappingTarget ProductEntity entity);
+
+    @Named("mapMultipartFileToString")
+    default String mapMultipartFileToString(MultipartFile file){
+        return (file != null && !file.isEmpty() ? file.getOriginalFilename() : null);
+    }
 }

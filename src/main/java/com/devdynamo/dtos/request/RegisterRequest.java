@@ -21,7 +21,6 @@ public class RegisterRequest {
     @NotBlank(message = "password must be not blank")
     private String password;
 
-    @NotNull
     @PhoneNumber
     private String phone;
 

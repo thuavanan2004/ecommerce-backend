@@ -11,6 +11,7 @@ import com.devdynamo.repositories.CategoryRepository;
 import com.devdynamo.repositories.ProductRepository;
 import com.devdynamo.repositories.SearchRepository;
 import com.devdynamo.repositories.specification.ProductSpecificationBuilder;
+import com.devdynamo.services.CloudinaryService;
 import com.devdynamo.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +41,8 @@ public class ProductServiceImpl implements ProductService {
     private final SearchRepository searchRepository;
 
     private final ProductMapper productMapper;
+
+    private final CloudinaryService cloudinaryService;
 
     private ProductEntity getProductEntityById(long productId){
         return productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
@@ -98,9 +102,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void createProduct(ProductRequestDTO request) {
-        CategoryEntity category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        CategoryEntity category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category not found"));;
         ProductEntity product = productMapper.toEntity(request);
         product.setCategory(category);
+        product.setImageUrl(cloudinaryService.uploadSingleFile(request.getImageUrl()));
+
         productRepository.save(product);
 
         log.info("Create product successfully");

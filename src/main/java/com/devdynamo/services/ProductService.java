@@ -4,6 +4,7 @@ import com.devdynamo.dtos.request.ProductRequestDTO;
 import com.devdynamo.dtos.response.PageResponse;
 import com.devdynamo.dtos.response.ProductResponseDTO;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 
 public interface ProductService {

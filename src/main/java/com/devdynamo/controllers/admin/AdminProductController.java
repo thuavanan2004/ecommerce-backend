@@ -12,7 +12,9 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/admin/products")
@@ -67,8 +69,8 @@ public class AdminProductController {
     }
 
     @Operation(summary = "Create product", description = "Tạo mới sản phẩm")
-    @PostMapping
-    public ResponseData<?> createProduct(@Valid @RequestBody ProductRequestDTO request){
+    @PostMapping()
+    public ResponseData<?> createProduct(@Valid @ModelAttribute ProductRequestDTO request){
         log.info("Create product");
         try{
             productService.createProduct(request);
