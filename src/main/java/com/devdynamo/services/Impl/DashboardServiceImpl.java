@@ -1,8 +1,10 @@
 package com.devdynamo.services.Impl;
 
 import com.devdynamo.dtos.response.DashboardSummaryDTO;
+import com.devdynamo.dtos.response.SalesStatsResponse;
 import com.devdynamo.enums.Role;
 import com.devdynamo.repositories.DashboardRepository;
+import com.devdynamo.repositories.OrderRepository;
 import com.devdynamo.repositories.ProductRepository;
 import com.devdynamo.repositories.UserRepository;
 import com.devdynamo.services.DashboardService;
@@ -14,6 +16,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,9 +25,10 @@ public class DashboardServiceImpl implements DashboardService {
     private final DashboardRepository dashboardRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
 
     @Override
-    public DashboardSummaryDTO summary() {
+    public DashboardSummaryDTO getSummaryStats() {
         DashboardSummaryDTO summary = new DashboardSummaryDTO();
 
         summary.setTotalSales(dashboardRepository.getTotalSales());
@@ -53,10 +58,48 @@ public class DashboardServiceImpl implements DashboardService {
         trend.setPercentageChange(calculatePercentageChange(previousMonthRevenue, currentMonthRevenue));
         summary.setRevenueTrend(trend);
 
-        // Top categories
 //        summary.setTopCategories(dashboardRepository.getTopCategories(PageRequest.of(0, 5)));
 
         return summary;
+    }
+
+    @Override
+    public SalesStatsResponse getSalesStats(String period) {
+        List<Object[]> statsData;
+        String periodFormat;
+
+        switch (period.toLowerCase()) {
+            case "daily":
+                statsData = orderRepository.findDailySalesStats();
+                periodFormat = "day";
+                break;
+            case "weekly":
+                statsData = orderRepository.findWeeklySalesStats();
+                periodFormat = "week";
+                break;
+            case "monthly":
+            default:
+                statsData = orderRepository.findMonthlySalesStats();
+                periodFormat = "month";
+        }
+
+        List<String> labels = new ArrayList<>();
+        List<Double> salesData = new ArrayList<>();
+        List<Integer> orderCounts = new ArrayList<>();
+
+        for (Object[] row : statsData) {
+            labels.add(row[0].toString());
+            salesData.add(Double.parseDouble(row[1].toString()));
+            orderCounts.add(Integer.parseInt(row[2].toString()));
+        }
+
+        return new SalesStatsResponse(
+                periodFormat,
+                labels,
+                salesData,
+                orderCounts
+        );
+
     }
 
     private BigDecimal calculatePercentageChange(BigDecimal previous, BigDecimal current) {

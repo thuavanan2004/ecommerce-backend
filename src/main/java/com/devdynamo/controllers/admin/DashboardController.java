@@ -11,12 +11,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/dashboard")
+@RequestMapping("/api/admin/stats")
 @Validated
 @Tag(name = "Dashboard")
 public class DashboardController {
@@ -25,9 +28,23 @@ public class DashboardController {
     @Operation(summary = "Summary")
     @GetMapping("/summary")
     public ResponseData<?> summary(){
-        log.info("Dashboard Summary");
         try{
-            return new ResponseData<>(HttpStatus.OK.value(), "Get summary success", dashboardService.summary());
+            return new ResponseData<>(HttpStatus.OK.value(), "Get summary success", dashboardService.getSummaryStats());
+        } catch (Exception e){
+            log.info("errorMessage={}", e.getMessage(), e.getCause());
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Get summary failed");
+        }
+
+    }
+
+    @Operation(summary = "sales")
+    @GetMapping("/sales")
+    public ResponseData<?> sales(@RequestParam(defaultValue = "monthly") String period){
+        try{
+            if (!List.of("daily", "weekly", "monthly").contains(period.toLowerCase())) {
+                throw new IllegalArgumentException("Invalid period parameter. Use daily, weekly or monthly");
+            }
+            return new ResponseData<>(HttpStatus.OK.value(), "Get summary success", dashboardService.getSalesStats(period));
         } catch (Exception e){
             log.info("errorMessage={}", e.getMessage(), e.getCause());
             return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Get summary failed");
