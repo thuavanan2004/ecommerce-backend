@@ -36,11 +36,11 @@ public interface DashboardRepository extends JpaRepository<OrderEntity, Long> {
     List<Object[]> getMonthlyRevenue(@Param("start") LocalDateTime start,
                                      @Param("end") LocalDateTime end);
 
-//    @Query("SELECT NEW com.devdynamo.dto.CategorySalesDTO(c.id, c.name, SUM(oi.quantity * oi.price)) " +
-//            "FROM OrderItem oi " +
-//            "JOIN oi.product p " +
-//            "JOIN p.category c " +
-//            "GROUP BY c.id, c.name " +
-//            "ORDER BY SUM(oi.quantity * oi.price) DESC")
-//    List<DashboardSummaryDTO.CategorySalesDTO> getTopCategories(Pageable pageable);
+    @Query("SELECT c.id, c.name, SUM(oi.quantity * oi.price) " +
+            "FROM OrderItemEntity oi " +
+            "JOIN oi.product p " +
+            "JOIN p.category c " +
+            "GROUP BY c.id, c.name " +
+            "ORDER BY SUM(oi.quantity * oi.price) DESC")
+    List<Object[]> getTopCategories(Pageable pageable);
 }

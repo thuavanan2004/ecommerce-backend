@@ -63,7 +63,13 @@ public class DashboardServiceImpl implements DashboardService {
         trend.setPercentageChange(calculatePercentageChange(previousMonthRevenue, currentMonthRevenue));
         summary.setRevenueTrend(trend);
 
-//        summary.setTopCategories(dashboardRepository.getTopCategories(PageRequest.of(0, 5)));
+        List<DashboardSummaryDTO.CategorySalesDTO> categorySales = new ArrayList<>();
+
+        for(Object[] o : dashboardRepository.getTopCategories(PageRequest.of(0, 5))){
+            categorySales.add(new DashboardSummaryDTO.CategorySalesDTO((Long) o[0], (String) o[1], (BigDecimal) o[2]));
+        }
+
+        summary.setTopCategories(categorySales);
 
         return summary;
     }
@@ -113,7 +119,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         return results.stream()
                 .map(row -> new CategorySalesStats(
-                        (String) row[0],    // categoryName
+                        (String) row[0],
                         ((Number) row[1]).doubleValue(),  // totalSales
                         ((Number) row[2]).intValue(),     // orderCount
                         ((Number) row[3]).intValue()       // productCount
