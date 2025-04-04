@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -45,6 +47,30 @@ public class DashboardController {
                 throw new IllegalArgumentException("Invalid period parameter. Use daily, weekly or monthly");
             }
             return new ResponseData<>(HttpStatus.OK.value(), "Get summary success", dashboardService.getSalesStats(period));
+        } catch (Exception e){
+            log.info("errorMessage={}", e.getMessage(), e.getCause());
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Get summary failed");
+        }
+
+    }
+
+    @Operation(summary = "sales by category")
+    @GetMapping("/sales-by-category")
+    public ResponseData<?> salesByCategory(){
+        try{
+            return new ResponseData<>(HttpStatus.OK.value(), "Get summary success", dashboardService.getSalesByCategory());
+        } catch (Exception e){
+            log.info("errorMessage={}", e.getMessage(), e.getCause());
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Get summary failed");
+        }
+
+    }
+
+    @Operation(summary = "orders status")
+    @GetMapping("/orders-status")
+    public ResponseData<?> getOrderStatusStats(){
+        try{
+            return new ResponseData<>(HttpStatus.OK.value(), "Get summary success", dashboardService.getOrderStatusStats());
         } catch (Exception e){
             log.info("errorMessage={}", e.getMessage(), e.getCause());
             return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Get summary failed");

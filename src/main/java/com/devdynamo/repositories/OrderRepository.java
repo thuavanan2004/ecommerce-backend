@@ -1,12 +1,15 @@
 package com.devdynamo.repositories;
 
+import com.devdynamo.dtos.response.OrderStatusCount;
 import com.devdynamo.entities.OrderEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<OrderEntity, Long>, JpaSpecificationExecutor<OrderEntity> {
@@ -49,4 +52,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long>, JpaSp
         ORDER BY year, week ASC
         """, nativeQuery = true)
     List<Object[]> findWeeklySalesStats();
+
+    @Query("SELECT o.status, COUNT(o) " +
+            "FROM OrderEntity o GROUP BY o.status")
+    List<Object[]> getOrderStatusStatistics();
 }

@@ -1,12 +1,12 @@
 package com.devdynamo.services.Impl;
 
+import com.devdynamo.dtos.response.CategorySalesStats;
 import com.devdynamo.dtos.response.DashboardSummaryDTO;
+import com.devdynamo.dtos.response.OrderStatusCount;
 import com.devdynamo.dtos.response.SalesStatsResponse;
+import com.devdynamo.enums.OrderStatus;
 import com.devdynamo.enums.Role;
-import com.devdynamo.repositories.DashboardRepository;
-import com.devdynamo.repositories.OrderRepository;
-import com.devdynamo.repositories.ProductRepository;
-import com.devdynamo.repositories.UserRepository;
+import com.devdynamo.repositories.*;
 import com.devdynamo.services.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -16,8 +16,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class DashboardServiceImpl implements DashboardService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
     @Override
     public DashboardSummaryDTO getSummaryStats() {
@@ -100,6 +105,30 @@ public class DashboardServiceImpl implements DashboardService {
                 orderCounts
         );
 
+    }
+
+    @Override
+    public List<CategorySalesStats> getSalesByCategory() {
+        List<Object[]> results = orderItemRepository.findSalesByCategory();
+
+        return results.stream()
+                .map(row -> new CategorySalesStats(
+                        (String) row[0],    // categoryName
+                        ((Number) row[1]).doubleValue(),  // totalSales
+                        ((Number) row[2]).intValue(),     // orderCount
+                        ((Number) row[3]).intValue()       // productCount
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderStatusCount> getOrderStatusStats() {
+        List<OrderStatusCount> result = new ArrayList<>();
+        List<Object[]> records = orderRepository.getOrderStatusStatistics();
+        for(Object[] o: records){
+            result.add(new OrderStatusCount((OrderStatus) o[0], (Long) o[1]));
+        }
+        return result;
     }
 
     private BigDecimal calculatePercentageChange(BigDecimal previous, BigDecimal current) {
