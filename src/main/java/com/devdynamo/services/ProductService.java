@@ -8,7 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 public interface ProductService {
-    ProductResponseDTO getProductById(long id);
+    ProductResponseDTO getProductById(long productId);
+
+    ProductResponseDTO getProduct(String slug);
 
     PageResponse<?> getAllProductForAdmin(int pageNo, int pageSize, String search, String sortBy);
 

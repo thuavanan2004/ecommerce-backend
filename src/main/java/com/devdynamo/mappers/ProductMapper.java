@@ -8,12 +8,15 @@ import lombok.RequiredArgsConstructor;
 import org.mapstruct.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
     @Mappings({@Mapping(source = "category.id", target = "categoryId"),
-            @Mapping(source = "category.name", target = "categoryName")})
+            @Mapping(source = "category.name", target = "categoryName"),
+            @Mapping(target = "size", ignore = true),
+            @Mapping(target = "imageUrl", ignore = true)})
     ProductResponseDTO toDTO(ProductEntity product);
 
     @Mapping(target = "category", ignore = true)
@@ -24,8 +27,16 @@ public interface ProductMapper {
     @Mapping(target = "imageUrl", ignore = true)
     void updateProductFromDTO(ProductRequestDTO dto, @MappingTarget ProductEntity entity);
 
-    @Named("mapMultipartFileToString")
-    default String mapMultipartFileToString(MultipartFile file){
-        return (file != null && !file.isEmpty() ? file.getOriginalFilename() : null);
+    @AfterMapping
+    default void mapCustomFields(ProductEntity product, @MappingTarget ProductResponseDTO.ProductResponseDTOBuilder dto) {
+        TreeSet<Double> sizes = product.getSize().isBlank() ? new TreeSet<>() :Arrays.stream(product.getSize().split(","))
+                .map(Double::parseDouble)
+                .collect(Collectors.toCollection(TreeSet::new));
+
+        Set<String> images = product.getImageUrl().isBlank() ? new HashSet<>() : Arrays.stream(product.getImageUrl().split(","))
+                .collect(Collectors.toSet());
+
+        dto.size(sizes);
+        dto.imageUrl(images);
     }
 }

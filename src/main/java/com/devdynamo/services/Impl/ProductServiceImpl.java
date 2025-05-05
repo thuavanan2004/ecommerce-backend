@@ -55,6 +55,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductResponseDTO getProduct(String slug) {
+        ProductEntity record = productRepository.getBySlug(slug);
+        return productMapper.toDTO(record);
+    }
+
+    @Override
     public PageResponse<?> getAllProductForAdmin(int pageNo, int pageSize, String search, String sortBy) {
         return searchRepository.getProducts(pageNo, pageSize, search, sortBy);
     }

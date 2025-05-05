@@ -6,6 +6,8 @@ import lombok.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Getter
 @Setter
@@ -18,9 +20,10 @@ public class ProductResponseDTO implements Serializable {
     private BigDecimal price;
     private BigDecimal discount;
     private Integer stockQuantity;
+    private TreeSet<Double> size;
     private Long categoryId;
     private String categoryName;
-    private String imageUrl;
+    private Set<String> imageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

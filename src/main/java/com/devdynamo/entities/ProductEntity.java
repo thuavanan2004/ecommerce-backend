@@ -35,6 +35,10 @@ public class ProductEntity {
     @Column(name = "stock_quantity", nullable = false)
     private Integer stockQuantity;
 
+    private String size;
+
+    private String slug;
+
     @Column(name = "image_url")
     private String imageUrl;
 
