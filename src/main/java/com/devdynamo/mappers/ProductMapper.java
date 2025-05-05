@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public interface ProductMapper {
     @Mappings({@Mapping(source = "category.id", target = "categoryId"),
             @Mapping(source = "category.name", target = "categoryName"),
+            @Mapping(source = "slug", target = "slug"),
             @Mapping(target = "size", ignore = true),
             @Mapping(target = "imageUrl", ignore = true)})
     ProductResponseDTO toDTO(ProductEntity product);

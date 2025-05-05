@@ -37,6 +37,7 @@ public class ProductEntity {
 
     private String size;
 
+    @Column(name="slug", unique = true, nullable = false, length = 255)
     private String slug;
 
     @Column(name = "image_url")

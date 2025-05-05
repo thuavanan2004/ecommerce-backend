@@ -21,11 +21,11 @@ public class ClientProductController {
     private final ProductService productService;
 
     @Operation(summary = "Get product")
-    @GetMapping("/{productId}")
-    public ResponseData<?> getProduct(@Min(1) @PathVariable long productId){
-        log.info("Client: Get product with productId={}", productId);
+    @GetMapping("/{slug}")
+    public ResponseData<?> getProduct(@PathVariable String slug){
+        log.info("Client: Get product with slug={}", slug);
         try{
-            return new ResponseData<>(HttpStatus.OK.value(), "Get product successfully", productService.getProductById(productId));
+            return new ResponseData<>(HttpStatus.OK.value(), "Get product successfully", productService.getProduct(slug));
         }catch (Exception e){
             log.error("errorMessage={}", e.getMessage(), e.getCause());
             return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Get product failed");
