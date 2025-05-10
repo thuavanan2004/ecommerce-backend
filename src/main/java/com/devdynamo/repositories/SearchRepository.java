@@ -47,7 +47,7 @@ public class SearchRepository {
 
     public PageResponse<?> getProducts(int pageNo, int pageSize, String search, String sortBy){
         log.info("Search products with keyword={}", search);
-        StringBuilder sql = new StringBuilder("SELECT new com.devdynamo.dtos.response.ProductResponseDTO(p.id, p.name, p.description, p.price, p.discount, p.stockQuantity, p.category.id, p.category.name, p.imageUrl, p.createdAt, p.updatedAt) FROM ProductEntity p  WHERE 1 = 1 ");
+        StringBuilder sql = new StringBuilder("SELECT p FROM ProductEntity p  WHERE 1 = 1 ");
         if(StringUtils.hasLength(search)){
             sql.append(" AND lower(p.name) like lower(:name)");
             sql.append(" OR lower(p.description) like lower(:description)");
@@ -70,7 +70,9 @@ public class SearchRepository {
         }
         selectQuery.setFirstResult(pageNo * pageSize);
         selectQuery.setMaxResults(pageSize);
-        List<?> products = selectQuery.getResultList();
+        List<ProductEntity> entities = selectQuery.getResultList();
+
+        List<ProductResponseDTO> products = entities.stream().map(productMapper::toDTO).toList();
 
         StringBuilder sqlCountQuery = new StringBuilder("SELECT COUNT(*) FROM ProductEntity p WHERE 1 = 1");
 
