@@ -14,12 +14,12 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductRequestDTO {
-    private Long id;
-
     @NotBlank(message = "Name must be not blank")
     private String name;
 
     private String description;
+
+    private String size;
 
     @NotNull(message = "Price must not be null")
     @Min(value = 0, message = "Price must be greater than or equal to 0")

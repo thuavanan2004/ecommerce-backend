@@ -57,7 +57,7 @@ public class AdminProductController {
 
     @Operation(summary = "Update product", description = "Cập nhật sản phẩm")
     @PutMapping("/{productId}")
-    public ResponseData<?> updateProduct(@PathVariable @Min(1) long productId, @Valid @RequestBody ProductRequestDTO request){
+    public ResponseData<?> updateProduct(@PathVariable @Min(1) long productId, @Valid @ModelAttribute ProductRequestDTO request){
         log.info("Update product by productId={}", productId);
         try{
             productService.updateProduct(productId, request);

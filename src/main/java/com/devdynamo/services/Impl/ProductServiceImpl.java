@@ -101,7 +101,9 @@ public class ProductServiceImpl implements ProductService {
         CategoryEntity category = categoryRepository.findById(request.getCategoryId()).orElseThrow(()-> new ResourceNotFoundException("Category not found"));
         productMapper.updateProductFromDTO(request, product);
         product.setCategory(category);
-
+        if(!product.getImageUrl().isEmpty()){
+            product.setImageUrl(cloudinaryService.uploadSingleFile(request.getImageUrl()));
+        }
         productRepository.save(product);
         log.info("Update product successfully");
     }
@@ -112,6 +114,7 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity product = productMapper.toEntity(request);
         product.setCategory(category);
         product.setImageUrl(cloudinaryService.uploadSingleFile(request.getImageUrl()));
+        product.setSlug(product.getName().toLowerCase().replace(" ", "-"));
 
         productRepository.save(product);
 
