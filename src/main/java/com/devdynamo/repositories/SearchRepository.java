@@ -234,9 +234,21 @@ public class SearchRepository {
             }
         }
 
-        Predicate productPre = builder.or(productPreList.toArray(new Predicate[0]));
-        Predicate categoryPre = builder.or(categoryPreList.toArray(new Predicate[0]));
-        Predicate finalPre = builder.and(productPre, categoryPre);
+        Predicate finalPre = null;
+
+        if (!productPreList.isEmpty() && !categoryPreList.isEmpty()) {
+            Predicate productPre = builder.or(productPreList.toArray(new Predicate[0]));
+            Predicate categoryPre = builder.or(categoryPreList.toArray(new Predicate[0]));
+            finalPre = builder.and(productPre, categoryPre);
+        } else if (!productPreList.isEmpty()) {
+            finalPre = builder.or(productPreList.toArray(new Predicate[0]));
+        } else if (!categoryPreList.isEmpty()) {
+            finalPre = builder.or(categoryPreList.toArray(new Predicate[0]));
+        }
+        if (finalPre != null) {
+            query.where(finalPre);
+        }
+
 
         query.where(finalPre);
         List<ProductEntity> list = entityManager.createQuery(query).setFirstResult(pageable.getPageNumber()).setMaxResults(pageable.getPageSize()).getResultList();

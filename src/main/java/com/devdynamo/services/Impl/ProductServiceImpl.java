@@ -60,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toDTO(record);
     }
 
+
     @Override
     public PageResponse<?> getAllProductForAdmin(int pageNo, int pageSize, String search, String sortBy) {
         return searchRepository.getProducts(pageNo, pageSize, search, sortBy);
@@ -67,31 +68,50 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageResponse<?> getAllProductForClient(Pageable pageable, String[] products, String[] categories) {
-        Page<ProductEntity> records;
+        boolean hasProductFilters = products != null && products.length > 0;
+        boolean hasCategoryFilters = categories != null && categories.length > 0;
 
-        if(products != null && categories != null){
+        if (hasProductFilters && hasCategoryFilters) {
+            // Có cả 2 điều kiện -> dùng join query
             return searchRepository.searchProductByCriteriaWithJoin(pageable, products, categories);
-        }else if(products != null){
+
+        } else if (hasProductFilters) {
+            // Chỉ lọc theo sản phẩm
             ProductSpecificationBuilder builder = new ProductSpecificationBuilder();
             Pattern pattern = Pattern.compile(SEARCH_SPEC_OPERATOR);
             for (String p : products){
                 Matcher matcher = pattern.matcher(p);
                 if(matcher.find()){
-                    builder.with(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4),matcher.group(5));
+                    builder.with(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4), matcher.group(5));
                 }
             }
-            records = productRepository.findAll(Objects.requireNonNull(builder.build()), pageable);
+            Page<ProductEntity> records = productRepository.findAll(Objects.requireNonNull(builder.build()), pageable);
+
+            List<ProductResponseDTO> results = records.stream().map(productMapper::toDTO).toList();
+            return PageResponse.builder()
+                    .pageNo(pageable.getPageNumber())
+                    .pageSize(pageable.getPageSize())
+                    .totalPage(records.getTotalPages())
+                    .items(results)
+                    .build();
+
+        } else if (hasCategoryFilters) {
+            // Chỉ lọc theo category -> vẫn dùng join để hỗ trợ lọc theo category
+            return searchRepository.searchProductByCriteriaWithJoin(pageable, new String[]{}, categories);
+
         } else {
-            records = productRepository.findAll(pageable);
+            // Không có điều kiện nào -> trả về tất cả
+            Page<ProductEntity> records = productRepository.findAll(pageable);
+            List<ProductResponseDTO> results = records.stream().map(productMapper::toDTO).toList();
+
+            return PageResponse.builder()
+                    .pageNo(pageable.getPageNumber())
+                    .pageSize(pageable.getPageSize())
+                    .totalPage(records.getTotalPages())
+                    .items(results)
+                    .build();
         }
 
-        List<ProductResponseDTO> results = records.stream().map(productMapper::toDTO).toList();
-        return PageResponse.builder()
-                .pageNo(pageable.getPageNumber())
-                .pageSize(pageable.getPageNumber())
-                .totalPage(records.getTotalPages())
-                .items(results)
-                .build();
     }
 
 

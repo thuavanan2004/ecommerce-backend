@@ -32,6 +32,7 @@ public class ClientProductController {
         }
     }
 
+
     @Operation(summary = "Get product")
     @GetMapping("/list")
     public ResponseData<?> getAllProduct(Pageable pageable,

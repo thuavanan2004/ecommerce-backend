@@ -118,10 +118,16 @@ public class RedisCartService {
                 continue;
             }
 
-            CartItemEntity cartItemEntity = new CartItemEntity();
-            cartItemEntity.setCart(cartEntity);
-            cartItemEntity.setProduct(product);
-            cartItemEntity.setQuantity(redisCartItem.getQuantity());
+            CartItemEntity cartItemEntity = cartItemRepository.findByCartIdAndProductId(cartEntity.getId(), product.getId()).stream().findFirst()
+                    .orElseGet(() -> {
+                        CartItemEntity record = new CartItemEntity();
+                        record.setCart(cartEntity);
+                        record.setProduct(product);
+                        record.setQuantity(redisCartItem.getQuantity());
+                        return record;
+                    });
+
+            cartItemEntity.setQuantity(cartItemEntity.getQuantity() + redisCartItem.getQuantity());
 
             cartItemsToSave.add(cartItemEntity);
         }
