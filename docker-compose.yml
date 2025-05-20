@@ -1,21 +1,6 @@
 
 services:
 
-  mysql:
-    image: mysql:8
-    container_name: mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: shoe_management
-      MYSQL_USER: myroot
-      MYSQL_PASSWORD:
-    volumes:
-      - mysql:/var/lib/mysql
-      - ./initdb.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - '3306:3306'
-
   redis:
     image: redis:6.2-alpine
     container_name: redis

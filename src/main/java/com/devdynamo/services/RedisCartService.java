@@ -93,11 +93,11 @@ public class RedisCartService {
                 objectMapper.readValue(guestCartJson, objectMapper.getTypeFactory().constructCollectionType(List.class, RedisCart.class)) :
                 new ArrayList<>();
 
-        if (guestCart.isEmpty()) {
-            return;
-        }
+
+        // Xác nhận user tồn tại
         userRepository.findById(request.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
+        // Tìm hoặc tạo mới cart
         CartEntity cartEntity = cartRepository.findByUserId(request.getUserId())
                 .orElseGet(() -> {
                     CartEntity newCart = new CartEntity();
@@ -106,37 +106,40 @@ public class RedisCartService {
                     return cartRepository.save(newCart);
                 });
 
+        // XÓA toàn bộ cart item cũ của cart này
+        long cartId =  cartEntity.getId();
+        cartItemRepository.deleteByCartId(cartEntity.getId());
+        if (guestCart.isEmpty()) {
+            return;
+        }
+
+
+        // Lấy thông tin sản phẩm từ Redis
         Set<Long> productIds = guestCart.stream().map(RedisCart::getProductId).collect(Collectors.toSet());
         Map<Long, ProductEntity> productMap = productRepository.findAllById(productIds)
                 .stream().collect(Collectors.toMap(ProductEntity::getId, p -> p));
 
+        // Tạo mới danh sách cart items để lưu
         List<CartItemEntity> cartItemsToSave = new ArrayList<>();
 
         for (RedisCart redisCartItem : guestCart) {
             ProductEntity product = productMap.get(redisCartItem.getProductId());
-            if (product == null) {
-                continue;
-            }
+            if (product == null) continue;
 
-            CartItemEntity cartItemEntity = cartItemRepository.findByCartIdAndProductId(cartEntity.getId(), product.getId()).stream().findFirst()
-                    .orElseGet(() -> {
-                        CartItemEntity record = new CartItemEntity();
-                        record.setCart(cartEntity);
-                        record.setProduct(product);
-                        record.setQuantity(redisCartItem.getQuantity());
-                        return record;
-                    });
-
-            cartItemEntity.setQuantity(cartItemEntity.getQuantity() + redisCartItem.getQuantity());
+            CartItemEntity cartItemEntity = new CartItemEntity();
+            cartItemEntity.setCart(cartEntity);
+            cartItemEntity.setProduct(product);
+            cartItemEntity.setQuantity(redisCartItem.getQuantity());
 
             cartItemsToSave.add(cartItemEntity);
         }
+
         if (!cartItemsToSave.isEmpty()) {
             cartItemRepository.saveAll(cartItemsToSave);
         }
 
-        redisTemplate.delete(guestCartKey);
     }
+
 
     public void mergeCart(List<RedisCart> userCart, List<RedisCart> guestCart, String guestCartKey) throws JsonProcessingException {
 
